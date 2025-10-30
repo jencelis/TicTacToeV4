@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.os.Bundle;
+import com.google.gson.Gson;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +26,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate( savedInstanceState );
         tttGame = new TicTacToe( );
         buildGuiByCode( );
+
+        //initialise gson in 'onCreate"
+        Gson Gson = new Gson();
+
     }
 
     public void buildGuiByCode( ) {
