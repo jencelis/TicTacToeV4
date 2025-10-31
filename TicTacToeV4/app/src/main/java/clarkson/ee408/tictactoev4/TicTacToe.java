@@ -3,11 +3,34 @@ package clarkson.ee408.tictactoev4;
 public class TicTacToe {
     public static final int SIDE = 3;
     private int turn;
+    // a device can be player 1 or player 2. stores who this device represents
+    private int player;
     private int [][] game;
 
-    public TicTacToe( ) {
+    // now can pass in whether this device is player 1 or 2
+    public TicTacToe(int player) {
+        this.player = player;
         game = new int[SIDE][SIDE];
         resetGame( );
+    }
+
+    // original constructor
+  //  public TicTacToe() {
+    //    game = new int[SIDE][SIDE];
+    //    resetGame( );
+   // }
+
+    // Getters and setters for player and turn
+    public int getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(int player) {
+        this.player = player;
+    }
+
+    public int getTurn() {
+        return turn;
     }
 
     public int play( int row, int col ) {
@@ -25,6 +48,7 @@ public class TicTacToe {
             return 0;
     }
 
+    //returns int 1 or 2 for which player won. return 0 if no one won
     public int whoWon( ) {
         int rows = checkRows( );
         if ( rows > 0 )
@@ -85,8 +109,17 @@ public class TicTacToe {
     }
 
     public String result( ) {
-        if( whoWon( ) > 0 )
-            return "Player " + whoWon( ) + " won";
+       // if( whoWon( ) > 0 )
+    //        return "Player " + whoWon( ) + " won";
+        if (player == whoWon())
+        {
+            return "You Won!";
+        }
+        //check if someone actaully won
+        else if (whoWon() != 0)
+        {
+            return "You Lost!";
+        }
         else if( canNotPlay( ) )
             return "Tie Game";
         else
