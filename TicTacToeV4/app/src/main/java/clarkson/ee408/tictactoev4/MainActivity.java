@@ -12,7 +12,7 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 import android.os.Bundle;
 import com.google.gson.Gson;
-
+import com.google.gson.GsonBuilder;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
         tttGame = new TicTacToe( );
         buildGuiByCode( );
 
-        //initialise gson in 'onCreate"
-        Gson Gson = new Gson();
+        //initialise gson in 'onCreate". used serialised null as it was mention in milestone 1
+        gson = new GsonBuilder().serializeNulls().create();
 
     }
 
