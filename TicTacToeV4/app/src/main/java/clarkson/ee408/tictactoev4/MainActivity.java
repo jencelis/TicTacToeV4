@@ -15,11 +15,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import android.os.Handler;
+import android.os.Looper;
 
 public class MainActivity extends AppCompatActivity {
     private TicTacToe tttGame;
     private Button [][] buttons;
     private TextView status;
+
+    private Handler handler;
+    private boolean shouldRequestMove;
+    private static final int REQUEST_INTERVAL = 1000;
+    
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -29,6 +36,18 @@ public class MainActivity extends AppCompatActivity {
 
         //initialise gson in 'onCreate". used serialised null as it was mention in milestone 1
         gson = new GsonBuilder().serializeNulls().create();
+        
+        // Setting up the periodic task using a handler
+        handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (shouldRequestMove) {
+                    requestMove();
+                }
+                handler.postDelayed(this, REQUEST_INTERVAL);
+            }
+        }, REQUEST_INTERVAL);
 
     }
 
