@@ -198,6 +198,10 @@ public class MainActivity extends AppCompatActivity {
             for( int row = 0; row < TicTacToe.SIDE; row ++ )
                 for( int column = 0; column < TicTacToe.SIDE; column++ )
                     if( v == buttons[row][column] )
+                        //sendMove
+                        int move = row * TicTacToe.SIDE + column;
+                        sendMove(move);
+
                         update( row, column );
         }
     }
@@ -205,6 +209,9 @@ public class MainActivity extends AppCompatActivity {
     private class PlayDialog implements DialogInterface.OnClickListener {
         public void onClick( DialogInterface dialog, int id ) {
             if( id == -1 ) /* YES button */ {
+                //Swap the player so that they swap who goes first between games.
+                if(tttGame.player() == 1) {tttgame.setPlayer(2);}
+                else {tttGame.setPlayer(1);}
                 tttGame.resetGame( );
                 enableButtons( true );
                 resetButtons( );
@@ -215,4 +222,22 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.finish( );
         }
     }
+
+    private void sendMove(int move) {
+        //Create a new request of type SEND_MOVE
+        Request request = new Request();
+        request.setType(requestType.SEND_MOVE);
+
+        String serializedMove = gson.toJson(move);
+        request.setData(serializedMove);
+
+        AppExecutors.getInstance().NetworkIO.execute(() -> {
+            Response response = SocketClient.getInstance().sendRequest(request, Response.class);
+
+            if (response != null && response.getStatus() == ResponseStatus.SUCCESS) {
+                Log.d("SEND_MOVE", "Move sent successfully: " + move);
+            } else {
+                Log.e("SEND_MOVE", "Failed to send move or response null.");
+            }
+        }};
 }
