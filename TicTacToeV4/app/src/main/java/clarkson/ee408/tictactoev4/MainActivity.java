@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 handler.postDelayed(this, REQUEST_INTERVAL);
             }
         }, REQUEST_INTERVAL);
-
+    updateTurnStatus();
     }
 
     public void buildGuiByCode( ) {
@@ -123,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
             buttons[row][col].setText( "+" );
         else if( play == 2 )
             buttons[row][col].setText( "-" );
+        updateTurnStatus();
+        
         if( tttGame.isGameOver( ) ) {
            status.setBackgroundColor( Color.YELLOW );
            // enableButtons( false );
@@ -151,12 +153,42 @@ public class MainActivity extends AppCompatActivity {
 
     public void showNewGameDialog( ) {
         AlertDialog.Builder alert = new AlertDialog.Builder( this );
-        alert.setTitle( "TicTacToe Game" );
-        alert.setMessage( "Play again?" );
+        alert.setTitle( tttGame.result() );
+        alert.setMessage( "Do you want to play again?" );
         PlayDialog playAgain = new PlayDialog( );
         alert.setPositiveButton( "YES", playAgain );
         alert.setNegativeButton( "NO", playAgain );
         alert.show( );
+    }
+
+    private void updateTurnStatus() {
+        if (tttGame.getTurn() == tttGame.getPlayer()) {
+            // It's the current player's turn
+            status.setText("Your Turn");
+            status.setBackgroundColor(Color.GREEN);
+            shouldRequestMove = false;
+            enableButtons(true);
+        } else {
+            // Waiting for opponent's move
+            status.setText("Waiting for Opponent");
+            status.setBackgroundColor(Color.BLUE);
+            shouldRequestMove = true;
+            enableButtons(false);
+        }
+    }
+
+    private void requestMove() {
+
+        Log.d("MainActivity", "requestMove called");
+    }
+
+     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Task 8: Clean up handler callbacks to prevent memory leaks
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
     }
 
     private class ButtonHandler implements View.OnClickListener {
