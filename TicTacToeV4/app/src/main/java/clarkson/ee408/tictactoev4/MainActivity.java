@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler;
     private boolean shouldRequestMove;
     private static final int REQUEST_INTERVAL = 1000;
-    
+    private Gson gson;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick( DialogInterface dialog, int id ) {
             if( id == -1 ) /* YES button */ {
                 //Swap the player so that they swap who goes first between games.
-                if(tttGame.player() == 1) {tttgame.setPlayer(2);}
+                if(tttGame.player() == 1) {tttGame.setPlayer(2);}
                 else {tttGame.setPlayer(1);}
                 tttGame.resetGame( );
                 enableButtons( true );
@@ -226,12 +226,10 @@ public class MainActivity extends AppCompatActivity {
     private void sendMove(int move) {
         //Create a new request of type SEND_MOVE
         Request request = new Request();
-        request.setType(requestType.SEND_MOVE);
+        request.setType(Request.RequestType.SEND_MOVE);
+        request.setData(gson.toJson(move));
 
-        String serializedMove = gson.toJson(move);
-        request.setData(serializedMove);
-
-        AppExecutors.getInstance().NetworkIO.execute(() -> {
+        AppExecutors.getInstance().networkIO.execute(() -> {
             Response response = SocketClient.getInstance().sendRequest(request, Response.class);
 
             if (response != null && response.getStatus() == ResponseStatus.SUCCESS) {
